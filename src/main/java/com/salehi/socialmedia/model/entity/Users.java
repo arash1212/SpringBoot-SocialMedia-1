@@ -8,12 +8,12 @@ public class Users implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
-    private boolean enabled;
+    private boolean enabled = true;
 
     public long getId() {
         return id;

@@ -7,7 +7,10 @@
 <body dir="rtl">
 <fieldset>
     <legend>ورود به سایت</legend>
-    <form action="#" method="post">
+    <form action="" method="post">
+        <div th:if="${param.error!=null}">
+            <p>خطا در ورود به سایت</p>
+        </div>
         <label for="emailInput">ایمیل : </label><br />
         <input id="emailInput" type="email" name="username" required/><br /><br />
         <label for="passwordInput">  رمز عبور :</label><br />
