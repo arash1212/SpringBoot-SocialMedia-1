@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>پروفایل</title>
+</head>
+<body dir="rtl">
+
+<ul>
+    <li><a href="/">صفحه اصلی</a></li>
+    <li><a href="/signup">ثبت نام</a></li>
+    <li><a href="/login">ورود به سایت</a></li>
+</ul>
+<br/><br/>
+<fieldset>
+    <legend>ثبت پست جدید</legend>
+    <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
+        <label for="textInput">متن پست :</label><br/>
+        <textarea id="textInput" name="text" required></textarea><br/>
+        <label for="filePosted">تصویر یا ویدیو :</label><br/>
+        <input id="filePosted" type="file" name="filePosted" required><br/>
+        <br/><br/>
+        <input type="submit" value="ثبت پست">
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>پست های کاربر :</legend>
+    <div th:each="post : ${session.userPosts}">
+        
+        <div th:if="${session.userPosts.size()>0}">
+            <img th:src="@{${post.getFilePath()}}"/><br />
+            <label>
+                متن پست :
+                <textarea th:text="${post.getText()}" readonly></textarea>
+            </label>
+
+        </div>
+
+        <!--if no posts found for user-->
+        <div th:if="${session.userPosts.size()<1}">
+            <p>پستی یافت نشد</p>
+        </div>
+    </div>
+</fieldset>
+
+</body>
+</html>

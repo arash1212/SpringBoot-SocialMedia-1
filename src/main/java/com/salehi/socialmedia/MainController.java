@@ -1,5 +1,7 @@
 package com.salehi.socialmedia;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,19 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class MainController {
 
+
     @RequestMapping("/")
     public String goToIndex() {
         return "index";
     }
 
     @RequestMapping("/login")
-    public String goToLoginPage(){
+    public String goToLoginPage() {
         return "/authentication/login";
     }
 
     @RequestMapping("/signup")
-    public String goToSignUpPage(){
+    public String goToSignUpPage() {
         return "/authentication/signup";
+    }
+
+    @RequestMapping("/user/profile")
+    public String goToProfile() {
+        return "/user/profile";
     }
 
 }
