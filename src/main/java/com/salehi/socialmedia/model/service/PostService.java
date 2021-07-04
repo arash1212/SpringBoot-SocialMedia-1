@@ -47,12 +47,12 @@ public class PostService {
             String fileName = post.getAuthor().getUsername().split("@")[0] + new Date().getYear() + UUID.randomUUID() + post.getFilePosted().getOriginalFilename();
             if ((fileType.split("/")[0]).equals("image")) {
                 Files.write(Paths.get(imagesDirectory.getPath() + File.separator + fileName), fileBytes);
-                post.setFilePath("usersFiles/" + authentication.getName() + "/images/" + fileName);
+                post.setFilePath("/usersFiles/" + authentication.getName() + "/images/" + fileName);
             }
             //if uploaded file is video file create new File in user 'videos' folder
             else if ((fileType.split("/")[0]).equals("video")) {
                 Files.write(Paths.get(videosDirectory.getPath() + File.separator  + fileName), fileBytes);
-                post.setFilePath("usersFiles/" + authentication.getName() + "/videos/" + fileName);
+                post.setFilePath("/usersFiles/" + authentication.getName() + "/videos/" + fileName);
             }
             //
             System.out.println(post.getFilePath());
