@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>صفحه اصلی</title>
@@ -8,9 +8,14 @@
 
 <ul>
     <li><a href="/">صفحه اصلی</a></li>
-    <div th:if="${#authentication.authenticated}">
+    <!--add these to list only if user is not authorized-->
+    <div sec:authorize="isAnonymous()">
         <li><a href="/signup">ثبت نام</a></li>
         <li><a href="/login">ورود به سایت</a></li>
+    </div>
+    <!--add these to list only if user is authorized-->
+    <div sec:authorize="isAuthenticated()">
+        <li><a href="/logout">خروج</a></li>
     </div>
 </ul>
 
