@@ -5,7 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "post")
 public class Post implements Serializable {
@@ -29,6 +31,17 @@ public class Post implements Serializable {
     private String audience = "Public";
     private boolean postHaveImage;
     private boolean postHaveVideo;
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<PostLikes> postLikes = new ArrayList<>();
+
+    public List<PostLikes> getPostLikes() {
+        return postLikes;
+    }
+
+    public Post setPostLikes(List<PostLikes> postLikes) {
+        this.postLikes = postLikes;
+        return this;
+    }
 
     public boolean isPostHaveImage() {
         return postHaveImage;

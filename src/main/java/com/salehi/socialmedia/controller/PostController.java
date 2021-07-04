@@ -1,7 +1,9 @@
 package com.salehi.socialmedia.controller;
 
 import com.salehi.socialmedia.model.entity.Post;
+import com.salehi.socialmedia.model.entity.PostLikes;
 import com.salehi.socialmedia.model.entity.Users;
+import com.salehi.socialmedia.model.service.PostLikesService;
 import com.salehi.socialmedia.model.service.PostService;
 import com.salehi.socialmedia.model.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +27,21 @@ import java.util.Arrays;
 public class PostController {
     private PostService postService;
     private UsersService usersService;
+    private PostLikesService postLikesService;
     //
     private Authentication authentication;
 
 
     @Autowired
-    public PostController(PostService postService, UsersService usersService) {
+    public PostController(PostService postService, UsersService usersService, PostLikesService postLikesService) {
         this.postService = postService;
         this.usersService = usersService;
+        this.postLikesService = postLikesService;
     }
 
     /**
-     *
      * @param post gets the request parameters and creates a post object to save in database (with postService)
-     * @param id gets userId parameter from html form and sends it to 'getUserPosts.do' controller
+     * @param id   gets userId parameter from html form and sends it to 'getUserPosts.do' controller
      * @return method redirects user to 'getUserPosts.do' controller
      */
     @RequestMapping(value = "/sendPost.do")
@@ -80,6 +83,17 @@ public class PostController {
         Users users = usersService.findUserById(Long.parseLong(id));
         //
         return "redirect:/user/profile?id=" + users.getId();
+    }
+
+    @RequestMapping(value = "/likePost.do")
+    public String likePost(@ModelAttribute Post post) {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        post = postService.findById(post.getId());
+        //
+        post.getPostLikes().add(new PostLikes().setUsers(usersService.findUserByUsername(authentication.getName())).setPost(post));
+        postService.saveLikes(post);
+        //
+        return "redirect:/user/profile?id=" + post.getAuthor().getId();
     }
 
 

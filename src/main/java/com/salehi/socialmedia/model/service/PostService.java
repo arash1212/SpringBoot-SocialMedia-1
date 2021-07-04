@@ -52,7 +52,7 @@ public class PostService {
             }
             //if uploaded file is video file create new File in user 'videos' folder
             else if ((fileType.split("/")[0]).equals("video")) {
-                Files.write(Paths.get(videosDirectory.getPath() + File.separator  + fileName), fileBytes);
+                Files.write(Paths.get(videosDirectory.getPath() + File.separator + fileName), fileBytes);
                 post.setFilePath("/usersFiles/" + authentication.getName() + "/videos/" + fileName);
                 post.setPostHaveVideo(true);
             }
@@ -95,4 +95,14 @@ public class PostService {
         }
         //
     }
+
+    public Post findById(long id) {
+        return postRepository.findById(id);
+    }
+
+    public void saveLikes(Post post) {
+        System.out.println(post.getId());
+        postRepository.save(post);
+    }
+
 }
