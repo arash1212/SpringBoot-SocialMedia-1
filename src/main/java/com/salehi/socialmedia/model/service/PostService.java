@@ -75,7 +75,6 @@ public class PostService {
      */
     public void checkForUserFilePaths(Post post) throws Exception {
         //
-        System.out.println("class path : " + ResourceUtils.getFile("classpath:"));
         String classesPath = ResourceUtils.getFile("classpath:").getAbsolutePath();
         //creating main (userFiles) directory to store user files at
         File usersFilesDirectory = new File(classesPath + File.separator + "static" + File.separator + "usersFiles");

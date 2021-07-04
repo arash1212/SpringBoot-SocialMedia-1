@@ -20,8 +20,6 @@
 </ul>
 <br/><br/>
 
-<br/><br/>
-
 <div th:if="${session.userDetail!=null}">
     <h1 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} "></h1>
 </div>
@@ -33,10 +31,10 @@
         <fieldset>
             <legend><h3>ثبت پست جدید</h3></legend>
             <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
-                <input type="text" name="userId" th:value="${param.id}" readonly><br/>
-                <label for="textInput">متن پست :</label><br/>
-                <textarea id="textInput" name="text" required></textarea><br/>
-                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
+                <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
+                <label for="textInput">متن پست :</label><br/><br />
+                <textarea id="textInput" name="text" required style="width: 20%;height: 100px;resize: none"></textarea><br/><br /><br />
+                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/><br />
                 <input id="filePosted" type="file" name="filePosted"><br/>
                 <br/><br/>
                 <input type="submit" value="ثبت پست">
@@ -55,7 +53,7 @@
                     <p th:text="${'نوشته شده توسط :'+post.getAuthor().getUsername().split('@')[0]}"></p>
                     <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
-                    <p th:text="${post.getText()}" style="width: 5px;" readonly></p>
+                    <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"></p>
 
                     <!--if post have image-->
                     <div th:if="${post.isPostHaveImage()}">
