@@ -55,7 +55,7 @@ public class PostService {
                 post.setFilePath("/usersFiles/" + authentication.getName() + "/videos/" + fileName);
             }
             //
-            System.out.println(post.getFilePath());
+            post.setDateAdded(new Date());
             postRepository.save(post);
             //
         } catch (Exception e) {

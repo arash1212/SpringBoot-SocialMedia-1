@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/user")
 public class UsersController {
@@ -28,6 +30,12 @@ public class UsersController {
             System.out.println("error in user signup");
             return "/authentication/signup";
         }
+    }
+
+    @RequestMapping("/findAllUsers.do")
+    public String findAllUsers(HttpServletRequest request){
+        request.getSession().setAttribute("usersList",usersService.findAll());
+        return "allUsersPage";
     }
 
 }

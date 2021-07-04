@@ -12,37 +12,55 @@
     <li><a href="/login">ورود به سایت</a></li>
 </ul>
 <br/><br/>
-<fieldset>
-    <legend>ثبت پست جدید</legend>
-    <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
-        <label for="textInput">متن پست :</label><br/>
-        <textarea id="textInput" name="text" required></textarea><br/>
-        <label for="filePosted">تصویر یا ویدیو :</label><br/>
-        <input id="filePosted" type="file" name="filePosted" required><br/>
-        <br/><br/>
-        <input type="submit" value="ثبت پست">
-    </form>
-</fieldset>
 
-<fieldset>
-    <legend>پست های کاربر :</legend>
-    <div th:each="post : ${session.userPosts}">
-        
-        <div th:if="${session.userPosts.size()>0}">
-            <img th:src="@{${post.getFilePath()}}"/><br />
-            <label>
-                متن پست :
-                <textarea th:text="${post.getText()}" readonly></textarea>
-            </label>
+<br/><br/>
 
-        </div>
+<div th:if="${session.userDetail!=null}">
+    <h1 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} "></h1>
+</div>
 
-        <!--if no posts found for user-->
-        <div th:if="${session.userPosts.size()<1}">
-            <p>پستی یافت نشد</p>
-        </div>
+<div th:if="${param.id!=null}">
+
+    <!--show 'send post' form only if user is in it's own profile-->
+    <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}">
+        <fieldset>
+            <legend><h3>ثبت پست جدید</h3></legend>
+            <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
+                <input type="text" name="userId" th:value="${param.id}" readonly><br/>
+                <label for="textInput">متن پست :</label><br/>
+                <textarea id="textInput" name="text" required></textarea><br/>
+                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
+                <input id="filePosted" type="file" name="filePosted" required><br/>
+                <br/><br/>
+                <input type="submit" value="ثبت پست">
+            </form>
+        </fieldset>
     </div>
-</fieldset>
+
+
+    <div th:if="${session.userDetail!=null}">
+        <fieldset>
+            <legend>پست های کاربر</legend>
+            <div th:each="post : ${session.userPosts}">
+
+                <div th:if="${session.userPosts.size()>0}"
+                     style="margin:auto; width: 40%;height: fit-content;border: groove;">
+                    <p th:text="${'نوشته شده توسط :'+post.getAuthor().getUsername().split('@')[0]}"></p>
+                    <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
+
+                    <p th:text="${post.getText()}" style="width: 5px;" readonly></p>
+                    <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%; margin: auto"/><br/>
+
+                </div>
+
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div th:if="${session.userDetail==null||param.id==null}">
+    <h3>پروفایلی برای کد کاربری مورد نظر یافت نشد</h3>
+</div>
 
 </body>
 </html>

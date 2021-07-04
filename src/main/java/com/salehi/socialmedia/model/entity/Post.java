@@ -18,7 +18,7 @@ public class Post implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private Users author;
     @Column(nullable = false)
-    private Date dateAdded = new Date();
+    private Date dateAdded;
     @Transient
     @JsonIgnore
     private MultipartFile filePosted;

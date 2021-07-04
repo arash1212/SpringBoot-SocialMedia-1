@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsersService {
     private UserRepository userRepository;
@@ -32,7 +34,15 @@ public class UsersService {
         userRepository.save(users);
     }
 
-    public Users findUserByUsername(String username){
+    public Users findUserByUsername(String username) {
         return userRepository.findUsersByUsername(username);
+    }
+
+    public Users findUserById(long id) {
+        return userRepository.findById(id);
+    }
+
+    public List<Users> findAll() {
+        return userRepository.findAll();
     }
 }
