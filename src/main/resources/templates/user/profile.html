@@ -30,7 +30,7 @@
                 <label for="textInput">متن پست :</label><br/>
                 <textarea id="textInput" name="text" required></textarea><br/>
                 <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
-                <input id="filePosted" type="file" name="filePosted" required><br/>
+                <input id="filePosted" type="file" name="filePosted"><br/>
                 <br/><br/>
                 <input type="submit" value="ثبت پست">
             </form>
@@ -49,7 +49,19 @@
                     <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
                     <p th:text="${post.getText()}" style="width: 5px;" readonly></p>
-                    <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%; margin: auto"/><br/>
+
+                    <!--if post have image-->
+                    <div th:if="${post.isPostHaveImage()}">
+                        <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%; margin: auto"/><br/>
+                    </div>
+
+                    <!--if post have video-->
+                    <div th:if="${post.isPostHaveVideo()}">
+                        <video width="90%" height="70%" controls>
+                            <source th:src="@{${post.getFilePath()}}" type="video/mp4">
+                        </video>
+                        <br/>
+                    </div>
 
                 </div>
 

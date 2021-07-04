@@ -48,11 +48,13 @@ public class PostService {
             if ((fileType.split("/")[0]).equals("image")) {
                 Files.write(Paths.get(imagesDirectory.getPath() + File.separator + fileName), fileBytes);
                 post.setFilePath("/usersFiles/" + authentication.getName() + "/images/" + fileName);
+                post.setPostHaveImage(true);
             }
             //if uploaded file is video file create new File in user 'videos' folder
             else if ((fileType.split("/")[0]).equals("video")) {
                 Files.write(Paths.get(videosDirectory.getPath() + File.separator  + fileName), fileBytes);
                 post.setFilePath("/usersFiles/" + authentication.getName() + "/videos/" + fileName);
+                post.setPostHaveVideo(true);
             }
             //
             post.setDateAdded(new Date());

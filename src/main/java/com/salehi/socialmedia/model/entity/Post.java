@@ -27,6 +27,26 @@ public class Post implements Serializable {
     //Public , Friends , Just Me
     @Column(nullable = false)
     private String audience = "Public";
+    private boolean postHaveImage;
+    private boolean postHaveVideo;
+
+    public boolean isPostHaveImage() {
+        return postHaveImage;
+    }
+
+    public Post setPostHaveImage(boolean postHaveImage) {
+        this.postHaveImage = postHaveImage;
+        return this;
+    }
+
+    public boolean isPostHaveVideo() {
+        return postHaveVideo;
+    }
+
+    public Post setPostHaveVideo(boolean postHaveVideo) {
+        this.postHaveVideo = postHaveVideo;
+        return this;
+    }
 
     public String getAudience() {
         return audience;
