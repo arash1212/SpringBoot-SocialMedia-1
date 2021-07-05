@@ -1,5 +1,6 @@
 package com.salehi.socialmedia;
 
+import com.salehi.socialmedia.model.entity.Friendship;
 import com.salehi.socialmedia.model.service.FriendshipService;
 import com.salehi.socialmedia.model.service.PostService;
 import com.salehi.socialmedia.model.service.UsersService;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Main controller for dispatching to basic pages like login ,index or signup page
@@ -52,7 +54,7 @@ public class MainController {
     /**
      * @param request is used to store 'userPosts' and 'userDetail' attributes on session
      * @param id      is used to get requested user and it's posts from the datasource
-     * @return method dispatches user to /user/profile html page with created session attributes (that used in the page to show user details and posts)
+     * @return method dispatches user to /user/profile html page with created session attributes (that will be used in the page to show user details and posts and etc)
      */
     @RequestMapping("/user/profile")
     public String goToProfile(HttpServletRequest request, @RequestParam(name = "id", required = false) String id) {
@@ -63,11 +65,27 @@ public class MainController {
             request.getSession().setAttribute("userDetail", usersService.findUserById(Long.parseLong(id)));
             //get authenticated user's id (user that logged in)
             request.getSession().setAttribute("authenticatedUserId", usersService.findUserByUsername(authentication.getName()).getId());
+            //
+            request.getSession().setAttribute("userRelatedFriendRequestsList", friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName())));
+            //check if user has any friend request to or received any friend request from the id that we are trying to dispatch to it's profile
+            List<Friendship> friendRequestsList = friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName()));
+            for (Friendship friendship : friendRequestsList) {
+                if (friendship.getUser2().getId() == Long.parseLong(id)) {
+                    request.getSession().setAttribute("friendRequestState","requestSender");
+                    return "/user/profile";
+                }else if(friendship.getUser1().getId() == Long.parseLong(id)){
+                    request.getSession().setAttribute("friendRequestState","requestReceiver");
+                    return "/user/profile";
+                }
+            }
+
         } else {
             request.getSession().setAttribute("userPosts", null);
             request.getSession().setAttribute("userDetail", null);
             request.getSession().setAttribute("authenticatedUserId", null);
+            request.getSession().setAttribute("friendRequestState","none");
         }
+        request.getSession().setAttribute("friendRequestState","none");
         return "/user/profile";
     }
 

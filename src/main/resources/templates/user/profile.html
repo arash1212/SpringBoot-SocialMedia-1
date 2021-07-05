@@ -33,11 +33,36 @@
 
 <!--friend Request form-only shows up if user is not in it's own profile-->
 <div th:if="${session.userDetail!=null&&session.userDetail.getId()!=session.authenticatedUserId}">
-    <form action="/user/sendFriendRequest.do">
-        <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly hidden/><br />
-        <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br />
-        <input type="submit" value="ارسال درخواست دوستی" />
-    </form>
+
+    <!--if user have already sent a friend request to this user-->
+    <div th:if="${session.friendRequestState.equals('requestSender')}">
+        <form action="/user/sendFriendRequest.do">
+            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                   hidden/><br/>
+            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+            <input type="text" value="شما قبلا درخواست دوستی ارسال کرده اید"/>
+        </form>
+    </div>
+
+    <!--if user have already received a friend request from this user-->
+    <div th:if="${session.friendRequestState.equals('requestReceiver')}">
+        <form action="/user/friendRequest">
+            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                   hidden/><br/>
+            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+            <input type="submit" value="شما قبلا از این کاربر درخواست دوستی دریافت کرده اید.برای بررسی کلیک کنید"/>
+        </form>
+    </div>
+
+    <!--if user dont have any friend request from this user or doesn't created any request to this user-->
+    <div th:if="${session.friendRequestState.equals('none')}">
+        <form action="/user/sendFriendRequest.do">
+            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                   hidden/><br/>
+            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+            <input type="submit" value="ارسال درخواست دوستی"/>
+        </form>
+    </div>
 </div>
 
 
@@ -51,7 +76,7 @@
             <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
                 <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
                 <label for="textInput">متن پست :</label><br/><br/>
-                <textarea id="textInput" name="text" required
+                <textarea id="textInput" name="text" placeholder="متن مورد نظر را در اینجا تایپ کنید..." required
                           style="width: 50%;height: 100px;resize: none"></textarea><br/><br/><br/>
                 <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/><br/>
                 <input id="filePosted" type="file" name="filePosted"><br/>
