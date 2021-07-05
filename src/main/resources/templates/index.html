@@ -15,6 +15,7 @@
     </div>
     <!--add these to list only if user is authorized-->
     <div sec:authorize="isAuthenticated()">
+        <li><a href="/user/friendRequest">درخواست های دوستی (تست)</a></li>
         <li><a href="/logout">خروج</a></li>
     </div>
 </ul>

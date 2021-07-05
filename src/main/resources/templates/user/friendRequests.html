@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>درخواست های دوستی</title>
+</head>
+<body dir="rtl">
+
+<ul>
+    <li><a href="/">صفحه اصلی</a></li>
+    <!--add these to list only if user is not authorized-->
+    <div sec:authorize="isAnonymous()">
+        <li><a href="/signup">ثبت نام</a></li>
+        <li><a href="/login">ورود به سایت</a></li>
+    </div>
+    <!--add these to list only if user is authorized-->
+    <div sec:authorize="isAuthenticated()">
+        <li><a href="/logout">خروج</a></li>
+    </div>
+</ul>
+
+<br/><br/>
+
+<table border="1" style="width: 100%">
+    <tr>
+        <td>کد درخواست</td>
+        <td>تاریخ درخواست</td>
+        <td>تاریخ رد درخواست</td>
+        <td>تاریخ قبول درخواست</td>
+        <td>کاربر درخواست کننده</td>
+        <td>کاربری که از آن درخواست شده</td>
+        <!--if request is for this user-->
+        <!--        <div th:if="${session.userRelatedFriendRequestsList.getUser1().getUsername().equals(#authentication.name)}">-->
+        <!--            <td>قبول درخواست</td>-->
+        <!--            <td>رد کردن درخواست</td>-->
+        <!--        </div>-->
+        <!--if request created by this user-->
+        <!--        <div th:if="${session.userRelatedFriendRequestsList.getUser2().getUsername().equals(#authentication.name)}">-->
+        <!--            <td>حذف درخواست</td>-->
+        <!--        </div>-->
+    </tr>
+    <div th:each="friendRequest : ${session.userRelatedFriendRequestsList}">
+        <tr>
+            <form action="/user/acceptFriendRequest.do">
+                <td><input type="text" name="id" th:value="${friendRequest.getId()}" readonly></td>
+                <td><input type="text" th:value="${friendRequest.getRequestDate()}" readonly></td>
+                <td><input type="text" th:value="${friendRequest.getDeniedDate()}" readonly></td>
+                <td><input type="text" th:value="${friendRequest.getApproveDate()}" readonly></td>
+                <td><input type="text" th:value="${friendRequest.getUser1().getUsername()}" readonly></td>
+                <td><input type="text" th:value="${friendRequest.getUser2().getUsername()}" readonly></td>
+
+                <!--if request is for this user-->
+                <div th:if="${friendRequest.getUser2().getUsername().equals(#authentication.name)&&friendRequest.getDeniedDate()==null&&friendRequest.getApproveDate()==null}">
+                    <td><input type="submit" value="قبول"></td>
+                    <td><input type="button" value="رد کردن" th:onclick="|denyFriendRequest(${friendRequest.getId()})|">
+                    </td>
+                </div>
+
+                <!--if request created by this user-->
+                <div th:if="${friendRequest.getUser1().getUsername().equals(#authentication.name)&&friendRequest.getDeniedDate()==null&&friendRequest.getApproveDate()==null}">
+                    <td><input type="button" value="حذف" th:onclick="|removeFriendRequest(${friendRequest.getId()})|">
+                    </td>
+                </div>
+
+
+            </form>
+        </tr>
+    </div>
+</table>
+
+<script>
+    function denyFriendRequest(id) {
+        window.location = "/user/denyFirendRequest.do?id=" + id;
+    }
+
+    function removeFriendRequest(id) {
+        window.location = "/user/RemoveFriendRequest.do?id=" + id;
+    }
+</script>
+
+</body>
+</html>

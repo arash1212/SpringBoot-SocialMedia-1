@@ -21,45 +21,61 @@
     </div>
     <!--add these to list only if user is authorized-->
     <div sec:authorize="isAuthenticated()">
+        <li><a href="/user/friendRequest">درخواست های دوستی (تست)</a></li>
         <li><a href="/logout">خروج</a></li>
     </div>
 </ul>
 <br/>
 
 <div th:if="${session.userDetail!=null}">
-    <h1 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} "></h1>
+    <h2 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} " style="margin: auto"></h2>
 </div>
+
+<!--friend Request form-only shows up if user is not in it's own profile-->
+<div th:if="${session.userDetail!=null&&session.userDetail.getId()!=session.authenticatedUserId}">
+    <form action="/user/sendFriendRequest.do">
+        <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly hidden/><br />
+        <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br />
+        <input type="submit" value="ارسال درخواست دوستی" />
+    </form>
+</div>
+
 
 <div th:if="${param.id!=null}">
 
     <!--show 'send post' form only if user is in it's own profile-->
-    <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}">
+    <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}"
+         style="margin:auto; width: 40%;height: fit-content;border: none;">
         <fieldset>
             <legend><h3>ثبت پست جدید</h3></legend>
             <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
                 <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
                 <label for="textInput">متن پست :</label><br/><br/>
                 <textarea id="textInput" name="text" required
-                          style="width: 20%;height: 100px;resize: none"></textarea><br/><br/><br/>
+                          style="width: 50%;height: 100px;resize: none"></textarea><br/><br/><br/>
                 <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/><br/>
                 <input id="filePosted" type="file" name="filePosted"><br/>
-                <br/><br/>
+                <br/>
                 <input type="submit" value="ثبت پست">
+                <br/>
             </form>
         </fieldset>
     </div>
 
 
-    <div th:if="${session.userDetail!=null}">
+    <div th:if="${session.userDetail!=null}" style="margin:auto; width: 40%;height: fit-content;border: none;">
         <fieldset>
             <legend>پست های کاربر</legend>
             <div th:each="post : ${session.userPosts}">
 
                 <div th:if="${session.userPosts.size()>0}"
-                     style="margin:auto; width: 40%;height: fit-content;border: groove;">
+                     style="margin:auto; width: 100%;height: fit-content;border: groove;">
                     <form action="/user/likePost.do">
-                        <input type="text" name="id" th:value="${post.getId()}" readonly> <br/>
-                        <p th:text="${'نوشته شده توسط :'+post.getAuthor().getUsername().split('@')[0]}"></p>
+                        <input type="text" name="id" th:value="${post.getId()}" readonly hidden> <br/>
+
+                        <a th:href="'/user/getUserPosts.do?userId='+${post.getAuthor().getId()}"
+                           th:text="${'نوشته شده توسط :'+post.getAuthor().getUsername().split('@')[0]}"></a><br/>
+
                         <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
                         <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"></p>
@@ -77,7 +93,7 @@
                             <br/>
                         </div>
 
-                        <input type="submit" value="لایک"><br />
+                        <input type="submit" value="لایک"><br/>
                         <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p>
                     </form>
 
