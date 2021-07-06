@@ -7,20 +7,12 @@ import com.salehi.socialmedia.model.service.PostLikesService;
 import com.salehi.socialmedia.model.service.PostService;
 import com.salehi.socialmedia.model.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.Arrays;
 
 @Controller
 @RequestMapping("/user")
@@ -47,11 +39,18 @@ public class PostController {
     @RequestMapping(value = "/sendPost.do")
     public String sendPost(@ModelAttribute Post post, @RequestParam("userId") String id) {
         try {
-            postService.save(post);
-            return "redirect:/user/getUserPosts.do?userId=" + id;
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            Users authenticatedUser = usersService.findUserById(Long.parseLong(id));
+            //
+            if (authenticatedUser.getId() == Long.parseLong(id)) {
+                postService.save(post);
+                return "redirect:/user/getUserPosts.do?userId=" + id;
+            } else {
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/user/getUserPosts.do?userId=" + id;
+            return "redirect:/user/profile?" + id;
         }
     }
 
@@ -88,10 +87,14 @@ public class PostController {
     @RequestMapping(value = "/likePost.do")
     public String likePost(@ModelAttribute Post post) {
         authentication = SecurityContextHolder.getContext().getAuthentication();
-        post = postService.findById(post.getId());
+        Users authenticatedUser = usersService.findUserByUsername(authentication.getName());
         //
-        post.getPostLikes().add(new PostLikes().setUsers(usersService.findUserByUsername(authentication.getName())).setPost(post));
-        postService.saveLikes(post);
+        post = postService.findById(post.getId());
+        //make sure that user can not create a 'postLike' for it's post  and user can not create more than one 'postLike' for a post
+        if (post.getAuthor().getId() != authenticatedUser.getId() && postLikesService.findPostLikeByPostAndUser(post, authenticatedUser) == null) {
+            post.getPostLikes().add(new PostLikes().setUsers(usersService.findUserByUsername(authentication.getName())).setPost(post));
+            postService.saveLikes(post);
+        }
         //
         return "redirect:/user/profile?id=" + post.getAuthor().getId();
     }

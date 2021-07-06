@@ -47,29 +47,32 @@ public class FriendshipService {
     }
 
     /**
-     *
      * @return returns list of requests that user created or created for user
      */
-    public List<Friendship> getAllUserRelatedRequests(Users users){
-        return friendshipRepository.getAllByUser1OrUser2(users,users);
+    public List<Friendship> getAllUserRelatedRequests(Users users) {
+        return friendshipRepository.getAllByUser1OrUser2(users, users);
     }
 
-    public void delete(Friendship friendship){
+    public void delete(Friendship friendship) {
 
         friendshipRepository.deleteById(friendship.getId());
     }
 
-    public Friendship getById(long id){
+    public Friendship getById(long id) {
         return friendshipRepository.getById(id);
     }
 
-    public void denyFriendRequest(Friendship friendship){
+    public void denyFriendRequest(Friendship friendship) {
         friendship.setDeniedDate(new Date());
         friendshipRepository.save(friendship);
     }
 
-    public void acceptFriendRequest(Friendship friendship){
+    public void acceptFriendRequest(Friendship friendship) {
         friendship.setApproveDate(new Date());
         friendshipRepository.save(friendship);
+    }
+
+    public Friendship getByUser1AndUser2(Users user1, Users user2) {
+        return friendshipRepository.getByUser1AndUser2(user1, user2);
     }
 }

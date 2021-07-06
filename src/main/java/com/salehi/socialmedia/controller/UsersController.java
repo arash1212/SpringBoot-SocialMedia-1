@@ -23,8 +23,15 @@ public class UsersController {
     @RequestMapping(value = "signUp.do")
     public String userSignup(@ModelAttribute Users users) {
         try {
-            usersService.save(users);
-            return "redirect:/login";
+            if (usersService.findUserByUsername(users.getUsername()) == null) {
+                usersService.save(users);
+                return "redirect:/login";
+            } else if (usersService.findUserByUsername(users.getUsername()) != null) {
+                return "redirect:/signup?error=usernameExists";
+            }
+            else {
+                return "redirect:/";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("error in user signup");
@@ -33,8 +40,8 @@ public class UsersController {
     }
 
     @RequestMapping("/findAllUsers.do")
-    public String findAllUsers(HttpServletRequest request){
-        request.getSession().setAttribute("usersList",usersService.findAll());
+    public String findAllUsers(HttpServletRequest request) {
+        request.getSession().setAttribute("usersList", usersService.findAll());
         return "allUsersPage";
     }
 

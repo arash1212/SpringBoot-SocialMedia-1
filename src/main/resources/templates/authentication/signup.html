@@ -13,13 +13,16 @@
 
 <fieldset>
     <legend>ثبت نام</legend>
-<form method="post" action="/user/signUp.do">
-    <label for="emailInput">ایمیل : </label><br />
-    <input id="emailInput" type="email" name="username" required/><br /><br />
-    <label for="passwordInput">رمز عبور : </label><br />
-    <input type="password" id="passwordInput" name="password"/><br /><br />
-    <input type="submit" value="ثبت نام"/><br /><br />
-</form>
+    <div th:if="${param.error!=null}">
+        <p>خطا : ایمیل وارد شده قبلا ثبت شده است</p>
+    </div>
+    <form method="post" action="/user/signUp.do">
+        <label for="emailInput">ایمیل : </label><br/>
+        <input id="emailInput" type="email" name="username" required/><br/><br/>
+        <label for="passwordInput">رمز عبور : </label><br/>
+        <input type="password" id="passwordInput" name="password"/><br/><br/>
+        <input type="submit" value="ثبت نام"/><br/><br/>
+    </form>
 </fieldset>
 
 </body>
