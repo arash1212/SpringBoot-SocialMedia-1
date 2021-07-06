@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>ورود به سایت</title>
+    <div th:replace="fragment/headerTemplate::head"></div>
 </head>
-<body dir="rtl">
+<body class="text-right">
 
-<ul>
-    <li><a href="/">صفحه اصلی</a></li>
-    <li><a href="/signup">ثبت نام</a></li>
-</ul>
-
+<div th:replace="fragment/headerTemplate::body"></div>
 
 <fieldset>
     <legend>ورود به سایت</legend>

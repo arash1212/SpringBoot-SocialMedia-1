@@ -8,27 +8,16 @@
     <div th:if="${session.userDetail!=null}">
         <title>خطا</title>
     </div>
+    <div th:replace="fragment/headerTemplate::head"></div>
 
 </head>
-<body dir="rtl">
+<body class="text-right">
 
-<ul>
-    <li><a href="/">صفحه اصلی</a></li>
-    <!--add these to list only if user is not authorized-->
-    <div sec:authorize="isAnonymous()">
-        <li><a href="/signup">ثبت نام</a></li>
-        <li><a href="/login">ورود به سایت</a></li>
-    </div>
-    <!--add these to list only if user is authorized-->
-    <div sec:authorize="isAuthenticated()">
-        <li><a href="/user/friendRequest">درخواست های دوستی (تست)</a></li>
-        <li><a href="/logout">خروج</a></li>
-    </div>
-</ul>
+<div th:replace="fragment/headerTemplate::body"></div>
 <br/>
 
 <div th:if="${session.userDetail!=null}">
-    <h2 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} " style="margin: auto"></h2>
+    <h2 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} "></h2>
 </div>
 
 <!--friend Request form-only shows up if user is not in it's own profile-->
@@ -65,20 +54,21 @@
     </div>
 </div>
 
+<br /><br />
 
-<div th:if="${param.id!=null}">
-
+<div th:if="${param.id!=null}" class="card">
+    <br /> <br />
     <!--show 'send post' form only if user is in it's own profile-->
     <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}"
-         style="margin:auto; width: 40%;height: fit-content;border: none;">
+         style="margin:auto; width: 40%;height: fit-content;border:solid black;" class="card-body">
         <fieldset>
-            <legend><h3>ثبت پست جدید</h3></legend>
+            <legend><h3 class="card-header">ثبت پست جدید</h3></legend>
             <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
                 <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
                 <label for="textInput">متن پست :</label><br/><br/>
                 <textarea id="textInput" name="text" placeholder="متن مورد نظر را در اینجا تایپ کنید..." required
                           style="width: 50%;height: 100px;resize: none"></textarea><br/><br/><br/>
-                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/><br/>
+                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br />
                 <input id="filePosted" type="file" name="filePosted"><br/>
                 <br/>
                 <input type="submit" value="ثبت پست">
@@ -87,11 +77,14 @@
         </fieldset>
     </div>
 
+    <br/>
 
-    <div th:if="${session.userDetail!=null}" style="margin:auto; width: 40%;height: fit-content;border: none;">
+
+    <!--displaying user posts-->
+    <div th:if="${session.userDetail!=null}" style="margin:auto; width: 40%;height: fit-content;border: none;" class="card">
         <fieldset>
-            <legend>پست های کاربر</legend>
-            <div th:each="post : ${session.userPosts}">
+            <legend class="card-header">پست های کاربر</legend>
+            <div th:each="post : ${session.userPosts}" class="card-body">
 
                 <div th:if="${session.userPosts.size()>0}"
                      style="margin:auto; width: 100%;height: fit-content;border: groove;">
@@ -103,7 +96,7 @@
 
                         <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
-                        <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"></p>
+                        <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word" class="card-text"></p>
 
                         <!--if post have image-->
                         <div th:if="${post.isPostHaveImage()}" style="margin: auto">
@@ -121,9 +114,7 @@
                         <input type="submit" value="لایک"><br/>
                         <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p>
                     </form>
-
                 </div>
-
             </div>
         </fieldset>
     </div>
