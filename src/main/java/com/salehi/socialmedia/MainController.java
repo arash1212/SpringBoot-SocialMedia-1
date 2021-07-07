@@ -5,6 +5,7 @@ import com.salehi.socialmedia.model.service.FriendshipService;
 import com.salehi.socialmedia.model.service.PostService;
 import com.salehi.socialmedia.model.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -62,7 +63,7 @@ public class MainController {
         //
         if (id != null && !id.equals("")) {
             request.getSession().setAttribute("userPosts", postService.getUserPosts(usersService.findUserById(Long.parseLong(id))));
-            request.getSession().setAttribute("userDetail", usersService.findUserById(Long.parseLong(id)));
+            request.getSession().setAttribute("userDetail", usersService.findUserByIdWithUserInfo(Long.parseLong(id)));
             //get authenticated user's id (user that logged in)
             request.getSession().setAttribute("authenticatedUserId", usersService.findUserByUsername(authentication.getName()).getId());
             //
@@ -71,10 +72,10 @@ public class MainController {
             List<Friendship> friendRequestsList = friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName()));
             for (Friendship friendship : friendRequestsList) {
                 if (friendship.getUser2().getId() == Long.parseLong(id)) {
-                    request.getSession().setAttribute("friendRequestState","requestSender");
+                    request.getSession().setAttribute("friendRequestState", "requestSender");
                     return "/user/profile";
-                }else if(friendship.getUser1().getId() == Long.parseLong(id)){
-                    request.getSession().setAttribute("friendRequestState","requestReceiver");
+                } else if (friendship.getUser1().getId() == Long.parseLong(id)) {
+                    request.getSession().setAttribute("friendRequestState", "requestReceiver");
                     return "/user/profile";
                 }
             }
@@ -83,9 +84,9 @@ public class MainController {
             request.getSession().setAttribute("userPosts", null);
             request.getSession().setAttribute("userDetail", null);
             request.getSession().setAttribute("authenticatedUserId", null);
-            request.getSession().setAttribute("friendRequestState","none");
+            request.getSession().setAttribute("friendRequestState", "none");
         }
-        request.getSession().setAttribute("friendRequestState","none");
+        request.getSession().setAttribute("friendRequestState", "none");
         return "/user/profile";
     }
 
@@ -96,6 +97,17 @@ public class MainController {
         request.getSession().setAttribute("userRelatedFriendRequestsList", friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName())));
         //
         return "/user/friendRequests";
+    }
+
+    @PreAuthorize("authentication.authenticated")
+    @RequestMapping("/user/UserInfo")
+    public String goToUserInfoSettingPage(HttpServletRequest request) {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        //
+        request.getSession().setAttribute("userDetail", usersService.findUserByUsername(authentication.getName()));
+        request.getSession().setAttribute("userInfo",usersService.findUserByUsername(authentication.getName()).getUserInfo());
+        //
+        return "/user/UserInfoSetting";
     }
 
 }

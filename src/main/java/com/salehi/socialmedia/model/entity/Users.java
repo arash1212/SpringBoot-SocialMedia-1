@@ -14,6 +14,17 @@ public class Users implements Serializable {
     private String password;
     @Column(nullable = false)
     private boolean enabled = true;
+    @OneToOne(fetch = FetchType.LAZY)
+    private UserInfo userInfo;
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public Users setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+        return this;
+    }
 
     public long getId() {
         return id;

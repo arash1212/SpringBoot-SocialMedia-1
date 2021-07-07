@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Query("select entity from users as entity")
     List<Users> findAll();
+
+    @Query("select entity from users as entity left join fetch entity.userInfo where entity.id=:id ")
+    Users findUserByIdWithUserInfo(long id);
 }

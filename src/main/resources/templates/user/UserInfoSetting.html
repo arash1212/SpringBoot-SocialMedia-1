@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>تنظیمات حساب کاربری</title>
+    <div th:replace="fragment/headerTemplate::head"></div>
+</head>
+<body class="text-right">
+
+<div th:replace="fragment/headerTemplate::body"></div>
+<br/>
+
+
+<div style="width: 70%;margin: auto" class="card">
+    <h1 class="card-header">تنظیمات حساب کاربری</h1>
+    <br/><br/>
+    <form action="/user/saveUserInfo.do" enctype="multipart/form-data" method="post" style="margin-right: 40px;">
+
+        <label>تغییر تصویر پروفایل :<br/><br />
+            <img th:src="@{${session.userInfo.getProfilePictureFileAddress()}}" style="width: 128px;height: 128px;"/><br/><br />
+            <input type="file" name="profilePictureFile" value="تغییر تصویر پروفایل"/><br />
+        </label><br/><br />
+
+<!--        <label>تغییر پیش زمینه پروفایل :<br/><br />-->
+<!--            <img th:src="@{${session.userInfo.getProfileBackgroundPictureFileAddress()}}" style="width: 256px;height: 128px;"/><br/><br />-->
+<!--            <input type="file" name="profileBackgroundPictureFile" value="تغییر پیش زمینه پروفایل"/><br />-->
+<!--        </label><br/><br />-->
+
+        <label> کد کاربری :<br/>
+            <input type="text" name="userId" th:value="${session.userDetail.getId()}" readonly required/><br/>
+        </label><br/><br/>
+        <label> کد اطلاعات کاربری :<br/>
+            <input type="text" name="userInfoId" th:value="${session.userInfo.getId()}" readonly required/><br/>
+        </label><br/><br/>
+        <label> نام :<br/>
+            <input type="text" name="name" th:value="${session.userInfo.getName()}" required/><br/>
+        </label><br/><br/>
+        <label> نام خانوادگی :<br/>
+            <input type="text" name="family" th:value="${session.userInfo.getFamily()}" required/><br/>
+        </label><br/><br/>
+        <label>شهر :<br/>
+            <input type="text" name="city" th:value="${session.userInfo.getCity()}" /><br/>
+        </label><br/><br/>
+        <label>کشور :<br/>
+            <input type="text" name="country" th:value="${session.userInfo.getCountry()}"/><br/>
+        </label><br/><br/>
+        <label>شغل :<br/>
+            <input type="text" name="job" th:value="${session.userInfo.getJob()}"/><br/>
+        </label><br/><br/><br/>
+
+        <input type="submit" value="ذخیره تغییرات">
+        <br/><br /><br />
+    </form>
+</div>
+
+</body>
+</html>

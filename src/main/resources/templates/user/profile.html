@@ -14,53 +14,71 @@
 <body class="text-right">
 
 <div th:replace="fragment/headerTemplate::body"></div>
+
+
 <br/>
 
-<div th:if="${session.userDetail!=null}">
-    <h2 th:text="'پروفایل کاربر :' + ${session.userDetail.getUsername()} "></h2>
-</div>
+<div th:if="${param.id!=null}">
 
-<!--friend Request form-only shows up if user is not in it's own profile-->
-<div th:if="${session.userDetail!=null&&session.userDetail.getId()!=session.authenticatedUserId}">
+    <!--profile infos header/top (like profile image name and background and etc)-->
+    <div>
+        <div th:style="'margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;overflow: hidden;background : url('+@{${session.userDetail.getUserInfo().getProfileBackgroundPictureFileAddress()}}+')'"
+             class="card-body">
+            <div th:if="${session.userDetail!=null}">
+                <h4 class="card-header"
+                    th:text=" 'پروفایل کاربر : ' + ${session.userDetail.getUserInfo().getName()} + ' ' + ${session.userDetail.getUserInfo().getFamily()}"></h4>
+            </div>
+            <br/>
+            <img th:src="@{${session.userDetail.userInfo.getProfilePictureFileAddress()}}"
+                 style="width: 128px;height: 128px; margin-right: 5px;float: right"/>
+            <p th:text="${session.userDetail.userInfo.getName()}" style="float: right;margin-right: 20px;"></p>
 
-    <!--if user have already sent a friend request to this user-->
-    <div th:if="${session.friendRequestState.equals('requestSender')}">
-        <form action="/user/sendFriendRequest.do">
-            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
-                   hidden/><br/>
-            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
-            <input type="text" value="شما قبلا درخواست دوستی ارسال کرده اید"/>
-        </form>
+            <!--friend Request form-only shows up if user is not in it's own profile-->
+            <div th:if="${session.userDetail!=null&&session.userDetail.getId()!=session.authenticatedUserId}">
+
+                <!--if user have already sent a friend request to this user-->
+                <div th:if="${session.friendRequestState.equals('requestSender')}"
+                     style="float: right;margin-right: 20px;">
+                    <form action="/user/sendFriendRequest.do">
+                        <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                               hidden/><br/>
+                        <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+                        <input type="text" value="شما قبلا درخواست دوستی ارسال کرده اید"/>
+                    </form>
+                </div>
+
+                <!--if user have already received a friend request from this user-->
+                <div th:if="${session.friendRequestState.equals('requestReceiver')}"
+                     style="float: right;margin-right: 20px;">
+                    <form action="/user/friendRequest">
+                        <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                               hidden/><br/>
+                        <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+                        <input type="submit"
+                               value="شما قبلا از این کاربر درخواست دوستی دریافت کرده اید.برای بررسی کلیک کنید"/>
+                    </form>
+                </div>
+
+                <!--if user dont have any friend request from this user or doesn't created any request to this user-->
+                <div th:if="${session.friendRequestState.equals('none')}" style="float: right;margin-right: 20px;">
+                    <form action="/user/sendFriendRequest.do">
+                        <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
+                               hidden/><br/>
+                        <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
+                        <input type="submit" value="ارسال درخواست دوستی"/>
+                    </form>
+                </div>
+            </div>
+
+            <br/><br/>
+        </div>
     </div>
 
-    <!--if user have already received a friend request from this user-->
-    <div th:if="${session.friendRequestState.equals('requestReceiver')}">
-        <form action="/user/friendRequest">
-            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
-                   hidden/><br/>
-            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
-            <input type="submit" value="شما قبلا از این کاربر درخواست دوستی دریافت کرده اید.برای بررسی کلیک کنید"/>
-        </form>
-    </div>
 
-    <!--if user dont have any friend request from this user or doesn't created any request to this user-->
-    <div th:if="${session.friendRequestState.equals('none')}">
-        <form action="/user/sendFriendRequest.do">
-            <input type="text" name="authenticatedUserID" th:value="${session.authenticatedUserId}" readonly
-                   hidden/><br/>
-            <input type="text" name="userId" th:value="${param.id}" readonly hidden/><br/>
-            <input type="submit" value="ارسال درخواست دوستی"/>
-        </form>
-    </div>
-</div>
-
-<br /><br />
-
-<div th:if="${param.id!=null}" class="card">
-    <br /> <br />
     <!--show 'send post' form only if user is in it's own profile-->
     <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}"
-         style="margin:auto; width: 40%;height: fit-content;border:solid black;" class="card-body">
+         style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;"
+         class="card-body">
         <fieldset>
             <legend><h3 class="card-header">ثبت پست جدید</h3></legend>
             <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
@@ -68,7 +86,7 @@
                 <label for="textInput">متن پست :</label><br/><br/>
                 <textarea id="textInput" name="text" placeholder="متن مورد نظر را در اینجا تایپ کنید..." required
                           style="width: 50%;height: 100px;resize: none"></textarea><br/><br/><br/>
-                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br />
+                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
                 <input id="filePosted" type="file" name="filePosted"><br/>
                 <br/>
                 <input type="submit" value="ثبت پست">
@@ -77,13 +95,12 @@
         </fieldset>
     </div>
 
-    <br/>
-
-
     <!--displaying user posts-->
-    <div th:if="${session.userDetail!=null}" style="margin:auto; width: 40%;height: fit-content;border: none;" class="card">
+    <div th:if="${session.userDetail!=null}"
+         style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;border-bottom:solid black;"
+         class="card-body">
         <fieldset>
-            <legend class="card-header">پست های کاربر</legend>
+            <legend class="card-header"><h3>پست های کاربر</h3></legend>
             <div th:each="post : ${session.userPosts}" class="card-body">
 
                 <div th:if="${session.userPosts.size()>0}"
@@ -92,16 +109,18 @@
                         <input type="text" name="id" th:value="${post.getId()}" readonly hidden> <br/>
 
                         <a th:href="'/user/getUserPosts.do?userId='+${post.getAuthor().getId()}"
-                           th:text="${'نوشته شده توسط :'+post.getAuthor().getUsername().split('@')[0]}"></a><br/>
+                           th:text="'نوشته شده توسط : ' +${session.userDetail.getUserInfo().getName()} + ' ' + ${session.userDetail.getUserInfo().getFamily()}"></a><br/>
 
                         <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
-                        <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word" class="card-text"></p>
+                        <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"
+                           class="card-text"></p>
 
                         <!--if post have image-->
                         <div th:if="${post.isPostHaveImage()}" style="margin: auto">
-                            <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%;"/><br/>
+                            <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%;" /><br/>
                         </div>
+                        <br/>
 
                         <!--if post have video-->
                         <div th:if="${post.isPostHaveVideo()}">
@@ -116,15 +135,22 @@
                     </form>
                 </div>
             </div>
+            <div th:if="${session.userPosts.size()<=0}" class="card-body">
+                <p>این کاربر هنوز پستی ارسال نکرده است</p>
+            </div>
         </fieldset>
     </div>
 </div>
+<br/><br/>
 
 <div th:if="${session.userDetail==null||param.id==null}" style="margin-right:30%;">
     <h2>متاسفیم</h2>
     <h4>خطایی در پردازش درخواست شما رخ داده است</h4><br/>
     <h3>پروفایلی برای کد کاربری مورد نظر یافت نشد</h3>
+
+    <br/><br/>
 </div>
+
 
 </body>
 </html>

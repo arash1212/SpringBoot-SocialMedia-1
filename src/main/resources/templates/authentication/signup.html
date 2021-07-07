@@ -10,7 +10,7 @@
 <div th:replace="fragment/headerTemplate::body"></div>
 
 <fieldset>
-    <legend>ثبت نام</legend>
+    <legend>ثبت نام</legend><br /> <br />
     <div th:if="${param.error!=null}">
         <p>خطا : ایمیل وارد شده قبلا ثبت شده است</p>
     </div>
@@ -18,7 +18,11 @@
         <label for="emailInput">ایمیل : </label><br/>
         <input id="emailInput" type="email" name="username" required/><br/><br/>
         <label for="passwordInput">رمز عبور : </label><br/>
-        <input type="password" id="passwordInput" name="password"/><br/><br/>
+        <input type="password" id="passwordInput" name="password"/><br/><br/><br />
+        <label for="name">نام : </label><br/>
+        <input type="text" id="name" name="name" required/><br/><br/>
+        <label for="family">نام خانوادگی : </label><br/>
+        <input type="text" id="family" name="family" required/><br/><br/>
         <input type="submit" value="ثبت نام"/><br/><br/>
     </form>
 </fieldset>
