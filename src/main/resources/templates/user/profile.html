@@ -16,13 +16,13 @@
 <div th:replace="fragment/headerTemplate::body"></div>
 
 
-<br/>
-
 <div th:if="${param.id!=null}">
 
+
+    <!--middle part-->
     <!--profile infos header/top (like profile image name and background and etc)-->
-    <div>
-        <div th:style="'margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;overflow: hidden;background : url('+@{${session.userDetail.getUserInfo().getProfileBackgroundPictureFileAddress()}}+')'"
+    <div th:if="${session.userDetail!=null}">
+        <div th:style="'margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;overflow: hidden;background : url('+@{${session.userDetail.getUserInfo().getProfileBackgroundPictureFileAddress()}}+');border-width: thin;'"
              class="card-body">
             <div th:if="${session.userDetail!=null}">
                 <h4 class="card-header"
@@ -72,73 +72,133 @@
 
             <br/><br/>
         </div>
-    </div>
 
 
-    <!--show 'send post' form only if user is in it's own profile-->
-    <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}"
-         style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;"
-         class="card-body">
-        <fieldset>
-            <legend><h3 class="card-header">ثبت پست جدید</h3></legend>
-            <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
-                <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
-                <label for="textInput">متن پست :</label><br/><br/>
-                <textarea id="textInput" name="text" placeholder="متن مورد نظر را در اینجا تایپ کنید..." required
-                          style="width: 50%;height: 100px;resize: none"></textarea><br/><br/><br/>
-                <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
-                <input id="filePosted" type="file" name="filePosted"><br/>
-                <br/>
-                <input type="submit" value="ثبت پست">
-                <br/>
-            </form>
-        </fieldset>
-    </div>
+        <!--show 'send post' form only if user is in it's own profile-->
+        <div th:if="${session.userDetail!=null&&session.userDetail.getUsername().equals(#authentication.name)}"
+             style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;border-width: thin; "
+             class="card-body">
+            <fieldset>
+                <legend><h3 class="card-header">ثبت پست جدید</h3></legend>
+                <form action="/user/sendPost.do" method="post" enctype="multipart/form-data">
+                    <input type="text" name="userId" th:value="${param.id}" readonly hidden><br/>
+                    <label for="textInput">متن پست :</label><br/>
+                    <textarea id="textInput" name="text" placeholder="متن مورد نظر را در اینجا تایپ کنید..." required
+                              style="width:90%;height: 100px;resize: none"></textarea><br/><br/>
+                    <label for="filePosted">تصویر یا ویدیو (حداکثر حجم ۵۰۰ مگابایت) :</label><br/>
+                    <input id="filePosted" type="file" name="filePosted"><br/>
+                    <br/>
+                    <input type="submit" value="ثبت پست"><br/>
+                    <br/>
+                </form>
+            </fieldset>
+        </div>
 
-    <!--displaying user posts-->
-    <div th:if="${session.userDetail!=null}"
-         style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;border-bottom:solid black;"
-         class="card-body">
-        <fieldset>
-            <legend class="card-header"><h3>پست های کاربر</h3></legend>
-            <div th:each="post : ${session.userPosts}" class="card-body">
+        <!--displaying user posts-->
+        <div th:if="${session.userDetail!=null}"
+             style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;border-bottom:solid black;border-width: thin;"
+             class="card-body">
+            <fieldset>
+                <legend class="card-header"><h3>پست های کاربر</h3></legend>
+                <div th:each="post : ${session.userPosts}" class="card-body">
 
-                <div th:if="${session.userPosts.size()>0}"
-                     style="margin:auto; width: 100%;height: fit-content;border: groove;">
-                    <form action="/user/likePost.do">
-                        <input type="text" name="id" th:value="${post.getId()}" readonly hidden> <br/>
+                    <div th:if="${session.userPosts.size()>0}"
+                         style="margin:auto;height: fit-content;border-bottom: solid black">
+                        <form action="/user/likePost.do" style="border-bottom: solid black;border-width: thin">
+                            <input type="text" name="id" th:value="${post.getId()}" readonly hidden> <br/>
 
-                        <a th:href="'/user/getUserPosts.do?userId='+${post.getAuthor().getId()}"
-                           th:text="'نوشته شده توسط : ' +${session.userDetail.getUserInfo().getName()} + ' ' + ${session.userDetail.getUserInfo().getFamily()}"></a><br/>
+                            <a th:href="'/user/getUserPosts.do?userId='+${post.getAuthor().getId()}"
+                               th:text="'نوشته شده توسط : ' +${session.userDetail.getUserInfo().getName()} + ' ' + ${session.userDetail.getUserInfo().getFamily()}"></a><br/>
 
-                        <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
+                            <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
 
-                        <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"
-                           class="card-text"></p>
+                            <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"
+                               class="card-text"></p>
 
-                        <!--if post have image-->
-                        <div th:if="${post.isPostHaveImage()}" style="margin: auto">
-                            <img th:src="@{${post.getFilePath()}}" style="width: 90%;height: 90%;" /><br/>
-                        </div>
-                        <br/>
-
-                        <!--if post have video-->
-                        <div th:if="${post.isPostHaveVideo()}">
-                            <video width="90%" height="70%" controls>
-                                <source th:src="@{${post.getFilePath()}}" type="video/mp4">
-                            </video>
+                            <!--if post have image-->
+                            <div th:if="${post.isPostHaveImage()}" style="margin: auto">
+                                <img th:src="@{${post.getFilePath()}}"
+                                     style="width: 90%;height: 90%;border-radius: 10%"/><br/>
+                            </div>
                             <br/>
-                        </div>
 
-                        <input type="submit" value="لایک"><br/>
-                        <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p>
-                    </form>
+                            <!--if post have video-->
+                            <div th:if="${post.isPostHaveVideo()}"
+                                 style="border-bottom: solid black;border-width: thin">
+                                <video width="90%" height="70%" controls>
+                                    <source th:src="@{${post.getFilePath()}}" type="video/mp4">
+                                </video>
+                                <br/>
+                            </div>
+
+                            <input type="submit" value="لایک"><br/>
+                            <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p><br/>
+
+                        </form>
+
+                        <!-- comments-->
+                        <div>
+                            <br/>
+                            <h4> نظرات </h4>
+                            <!--submit post-->
+                            <div>
+                                <form action="/postComment/saveComment.do?url=test">
+                                    <input type="text" name="url" th:value="${param.id}" hidden
+                                           readonly/><br/>
+                                    <input type="text" name="postId" th:value="${post.getId()}" hidden readonly/><br/>
+                                    <textarea id="textInputComment" name="text"
+                                              placeholder="نظر خود را وارد کنید..."
+                                              style="width:90%;height: 100px;resize: none"></textarea><br/><br/>
+                                    <input type="submit" value="ثبت نظر"/><br/>
+                                </form>
+                            </div>
+                            <!--display post comments-->
+                            <div th:if="${post.getPostCommentsList().size()>0}">
+
+                                <!-- if comments are less than five load all of them -->
+                                <div th:if="${post.getPostCommentsList().size()<6}">
+                                    <div th:each="comment :${post.getPostCommentsList()}">
+                                        <br/>
+                                        <div style="border-bottom: solid black;border-width: thin">
+                                            <a th:href="${'/user/profile?id='+comment.getAuthor().getId()}"><p
+                                                    th:text="${comment.getAuthor().getUserInfo().getName() + ' ' + comment.getAuthor().getUserInfo().getFamily()+' گفته :'}"></p>
+                                            </a>
+                                            <p th:text="${ 'در تاریخ : ' + comment.getDateAdded()}"></p>
+                                            <p th:text="${comment.getText()}"></p>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                </div>
+
+                                <!-- if comments are more than five load only five of them -->
+                                <div th:if="${post.getPostCommentsList().size()>5}">
+                                    <div th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <br/>
+                                        <div style="border-bottom: solid black;border-width: thin">
+                                            <a th:href="${'/user/profile?id='+post.getPostCommentsList().get(i).getAuthor().getId()}">
+                                                <p
+                                                        th:text="${post.getPostCommentsList().get(i).getAuthor().getUserInfo().getName()+ ' ' + post.getPostCommentsList().get(i).getAuthor().getUserInfo().getFamily() + ' گفته :'}"></p>
+                                            </a>
+                                            <p th:text="${ 'در تاریخ : ' + post.getPostCommentsList().get(i).getDateAdded()}"></p>
+                                            <p th:text="${post.getPostCommentsList().get(i).getText()}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <br/>
+
+                            <div th:if="${post.getPostCommentsList().size()<=0}">
+                                <p>نظری برای این پست ثبت نشده</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div th:if="${session.userPosts.size()<=0}" class="card-body">
-                <p>این کاربر هنوز پستی ارسال نکرده است</p>
-            </div>
-        </fieldset>
+                <div th:if="${session.userPosts.size()<=0}" class="card-body">
+                    <p>این کاربر هنوز پستی ارسال نکرده است</p>
+                </div>
+            </fieldset>
+        </div>
     </div>
 </div>
 <br/><br/>

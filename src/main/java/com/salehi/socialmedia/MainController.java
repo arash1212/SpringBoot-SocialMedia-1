@@ -59,35 +59,41 @@ public class MainController {
      */
     @RequestMapping("/user/profile")
     public String goToProfile(HttpServletRequest request, @RequestParam(name = "id", required = false) String id) {
-        authentication = SecurityContextHolder.getContext().getAuthentication();
-        //
-        if (id != null && !id.equals("")) {
-            request.getSession().setAttribute("userPosts", postService.getUserPosts(usersService.findUserById(Long.parseLong(id))));
-            request.getSession().setAttribute("userDetail", usersService.findUserByIdWithUserInfo(Long.parseLong(id)));
-            //get authenticated user's id (user that logged in)
-            request.getSession().setAttribute("authenticatedUserId", usersService.findUserByUsername(authentication.getName()).getId());
+        try {
+            authentication = SecurityContextHolder.getContext().getAuthentication();
             //
-            request.getSession().setAttribute("userRelatedFriendRequestsList", friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName())));
-            //check if user has any friend request to or received any friend request from the id that we are trying to dispatch to it's profile
-            List<Friendship> friendRequestsList = friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName()));
-            for (Friendship friendship : friendRequestsList) {
-                if (friendship.getUser2().getId() == Long.parseLong(id)) {
-                    request.getSession().setAttribute("friendRequestState", "requestSender");
-                    return "/user/profile";
-                } else if (friendship.getUser1().getId() == Long.parseLong(id)) {
-                    request.getSession().setAttribute("friendRequestState", "requestReceiver");
-                    return "/user/profile";
+            if (id != null && !id.equals("")) {
+                request.getSession().setAttribute("userPosts", postService.getUserPosts(usersService.findUserById(Long.parseLong(id))));
+                request.getSession().setAttribute("userDetail", usersService.findUserByIdWithUserInfo(Long.parseLong(id)));
+                //get authenticated user's id (user that logged in)
+                request.getSession().setAttribute("authenticatedUserId", usersService.findUserByUsername(authentication.getName()).getId());
+                //
+                request.getSession().setAttribute("userRelatedFriendRequestsList", friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName())));
+                //check if user has any friend request to or received any friend request from the id that we are trying to dispatch to it's profile
+                List<Friendship> friendRequestsList = friendshipService.getAllUserRelatedRequests(usersService.findUserByUsername(authentication.getName()));
+                for (Friendship friendship : friendRequestsList) {
+                    if (friendship.getUser2().getId() == Long.parseLong(id)) {
+                        request.getSession().setAttribute("friendRequestState", "requestSender");
+                        return "/user/profile";
+                    } else if (friendship.getUser1().getId() == Long.parseLong(id)) {
+                        request.getSession().setAttribute("friendRequestState", "requestReceiver");
+                        return "/user/profile";
+                    }
                 }
-            }
 
-        } else {
-            request.getSession().setAttribute("userPosts", null);
-            request.getSession().setAttribute("userDetail", null);
-            request.getSession().setAttribute("authenticatedUserId", null);
+            } else {
+                request.getSession().setAttribute("userPosts", null);
+                request.getSession().setAttribute("userDetail", null);
+                request.getSession().setAttribute("authenticatedUserId", null);
+                request.getSession().setAttribute("friendRequestState", "none");
+            }
             request.getSession().setAttribute("friendRequestState", "none");
+            return "/user/profile";
+        }catch (NumberFormatException e){
+            System.out.println("wrong id input format");
+            System.out.println(e.getMessage());
+            return "redirect:/user/profile?id=-1";
         }
-        request.getSession().setAttribute("friendRequestState", "none");
-        return "/user/profile";
     }
 
     @RequestMapping("/user/friendRequest")

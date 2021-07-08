@@ -33,6 +33,17 @@ public class Post implements Serializable {
     private boolean postHaveVideo;
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<PostLikes> postLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<PostComment> postCommentsList = new ArrayList<>();
+
+    public List<PostComment> getPostCommentsList() {
+        return postCommentsList;
+    }
+
+    public Post setPostCommentsList(List<PostComment> postComment) {
+        this.postCommentsList = postComment;
+        return this;
+    }
 
     public List<PostLikes> getPostLikes() {
         return postLikes;
