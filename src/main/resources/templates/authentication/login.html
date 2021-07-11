@@ -8,20 +8,23 @@
 <body class="text-right">
 
 <div th:replace="fragment/headerTemplate::body"></div>
+<br /><br />
 
-<fieldset>
-    <legend>ورود به سایت</legend>
-    <form action="" method="post">
-        <div th:if="${param.error!=null}">
-            <p>خطا در ورود به سایت</p>
-        </div>
-        <label for="emailInput">ایمیل : </label><br />
-        <input id="emailInput" type="email" name="username" required/><br /><br />
-        <label for="passwordInput">  رمز عبور :</label><br />
-        <input type="password" name="password" id="passwordInput" required/><br /><br />
-        <input type="submit" value="ورود"/><br /><br />
-    </form>
-</fieldset>
+<div class="container">
+    <fieldset>
+        <legend>ورود به سایت</legend><br /><br />
+        <form action="" method="post">
+            <div th:if="${param.error!=null}">
+                <p>خطا در ورود به سایت</p>
+            </div>
+            <label for="emailInput">ایمیل : </label><br/>
+            <input id="emailInput" type="email" name="username" required/><br/><br/>
+            <label for="passwordInput"> رمز عبور :</label><br/>
+            <input type="password" name="password" id="passwordInput" required/><br/><br/>
+            <input type="submit" value="ورود" class="btn btn-secondary"/><br/><br/>
+        </form>
+    </fieldset>
+</div>
 
 </body>
 </html>

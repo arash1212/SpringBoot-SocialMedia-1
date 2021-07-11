@@ -116,4 +116,11 @@ public class MainController {
         return "/user/UserInfoSetting";
     }
 
+    @RequestMapping("/user/FriendList")
+    public String goToUserFriendListPage(HttpServletRequest request){
+        request.getSession().setAttribute("friendList",usersService.getUserFriendsList());
+        //
+        return "/user/FriendsList";
+    }
+
 }

@@ -60,7 +60,8 @@ public class FriendshipController {
         friendship = friendshipService.getById(friendship.getId());
         //check if user that's trying to remove a friend request is the sender of that request
         if (friendship != null && friendship.getUser1().getId() == authenticatedUser.getId())
-            friendshipService.delete(friendship);
+            if (friendship.getDeniedDate() == null && friendship.getApproveDate() == null)
+                friendshipService.delete(friendship);
         //
         return "redirect:/user/friendRequest";
     }
@@ -73,20 +74,24 @@ public class FriendshipController {
         friendship = friendshipService.getById(friendship.getId());
         //check if user that's trying to accept a friend request is the user that received that request
         if (friendship != null && friendship.getUser2().getId() == authenticatedUser.getId())
-            friendshipService.acceptFriendRequest(friendship);
+            if (friendship.getDeniedDate() == null )
+                friendshipService.acceptFriendRequest(friendship);
         return "redirect:/user/friendRequest";
     }
 
     @RequestMapping("/denyFirendRequest.do")
     public String denyFriendRequest(@ModelAttribute Friendship friendship) {
+
         authentication = SecurityContextHolder.getContext().getAuthentication();
         Users authenticatedUser = usersService.findUserByUsername(authentication.getName());
         //
         friendship = friendshipService.getById(friendship.getId());
         //check if user that's trying to deny a friend request is the user that received that request
         if (friendship != null && friendship.getUser2().getId() == authenticatedUser.getId())
-            friendshipService.denyFriendRequest(friendship);
+            if (friendship.getApproveDate() == null)
+                friendshipService.denyFriendRequest(friendship);
         //
+
         return "redirect:/user/friendRequest";
     }
 }

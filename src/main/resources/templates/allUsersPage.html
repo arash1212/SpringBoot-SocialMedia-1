@@ -9,22 +9,25 @@
 
 <div th:replace="fragment/headerTemplate::body"></div>
 
-<table border="1">
-    <tr>
-        <th>کد کاربری</th>
-        <th>نام کاربری</th>
-        <th>انتخاب کاربر</th>
-    </tr>
-    <div th:each="user : ${session.usersList}">
+<br/><br/>
+<div class="container">
+    <table border="1" class="table table-bordered table-hover">
         <tr>
-        <form action="/user/getUserPosts.do">
-            <td><input type="text" name="username" th:value="${user.getUsername()}" readonly></td>
-            <td><input type="text" name="userId" th:value="${user.getId()}" readonly></td>
-            <td><input type="submit" value="انتخاب"></td>
-        </form>
+            <th>کد کاربری</th>
+            <th>نام کاربری</th>
+            <th>انتخاب کاربر</th>
         </tr>
-    </div>
-</table>
+        <div th:each="user : ${session.usersList}">
+            <tr>
+                <form action="/user/getUserPosts.do">
+                    <td><input type="text" name="username" th:value="${user.getUsername()}" readonly></td>
+                    <td><input type="text" name="userId" th:value="${user.getId()}" readonly></td>
+                    <td><input type="submit" value="انتخاب" class="btn btn-secondary "></td>
+                </form>
+            </tr>
+        </div>
+    </table>
+</div>
 
 </body>
 </html>
