@@ -84,7 +84,7 @@ public class PostService {
      * Method used for Testing for now
      * Method used to get user and All of it's friends Posts/Activity
      *
-     * @return Method returns a list of all authenticated user friends 'Post's
+     * @return Method returns a list of all authenticated user and it's friends 'Post's
      */
     public List<Post> getAllFriendsActivity() {
         //

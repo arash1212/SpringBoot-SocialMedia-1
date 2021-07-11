@@ -131,6 +131,8 @@
                                 <br/>
                             </div>
 
+                            <!-- post likes button -->
+                            <input type="text" name="url" th:value="${'/user/profile?id='+session.userDetail.getId()}" hidden readonly>
                             <input type="submit" value="لایک"><br/>
                             <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p><br/>
 

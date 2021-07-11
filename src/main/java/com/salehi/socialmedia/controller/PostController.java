@@ -85,7 +85,7 @@ public class PostController {
     }
 
     @RequestMapping(value = "/likePost.do")
-    public String likePost(@ModelAttribute Post post) {
+    public String likePost(@ModelAttribute Post post, @RequestParam("url") String url) {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         Users authenticatedUser = usersService.findUserByUsername(authentication.getName());
         //
@@ -96,7 +96,7 @@ public class PostController {
             postService.saveLikes(post);
         }
         //
-        return "redirect:/user/profile?id=" + post.getAuthor().getId();
+        return "redirect:"+url;
     }
 
 

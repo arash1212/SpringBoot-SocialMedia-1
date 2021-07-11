@@ -46,6 +46,8 @@
                         <br/>
                     </div>
 
+                    <!-- post like button -->
+                    <input type="text" name="url" th:value="${'/user/Activities'}" hidden readonly>
                     <input type="submit" value="لایک"><br/>
                     <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p><br/>
 
