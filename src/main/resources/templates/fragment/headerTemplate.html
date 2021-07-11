@@ -8,17 +8,18 @@
 
 <nav class="navbar bg-dark">
     <ul class="navbar nav">
-        <li class="nav-item"><a href="/" class="nav-link">صفحه اصلی</a></li>
+        <li class="nav-item"><a href="/" class="nav-link" style="color: white">صفحه اصلی</a></li>
         <!--add these to list only if user is not authorized-->
-        <li sec:authorize="isAnonymous()" class="nav-item"><a href="/signup" class="nav-link">ثبت نام</a></li>
-        <li sec:authorize="isAnonymous()" class="nav-item"><a href="/login" class="nav-link">ورود به سایت</a></li>
+        <li sec:authorize="isAnonymous()" class="nav-item"  style="color: white"><a href="/signup" class="nav-link"  style="color: white">ثبت نام</a></li>
+        <li sec:authorize="isAnonymous()" class="nav-item"  style="color: white"><a href="/login" class="nav-link"  style="color: white">ورود به سایت</a></li>
         <!--add these to list only if user is authorized-->
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/getMyPosts.do" class="nav-link"> پروفایل </a></li>
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/friendRequest" class="nav-link">درخواست های دوستی (تست)</a></li>
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/findAllUsers.do" class="nav-link">لیست تمام کاربران (تست) </a></li>
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/FriendList" class="nav-link">صفحه مشاهده لیست دوستان</a></li>
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/UserInfo" class="nav-link">تنظیمات اطلاعات حساب کاربری</a></li>
-        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/logout" class="nav-link">خروج</a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/getMyPosts.do" class="nav-link"  style="color: white"> پروفایل </a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/Activities" class="nav-link"  style="color: white"> فعالیت ها/Activities </a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/friendRequest" class="nav-link"  style="color: white">درخواست های دوستی (تست)</a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/findAllUsers.do" class="nav-link"  style="color: white">لیست تمام کاربران (تست) </a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/FriendList" class="nav-link"  style="color: white">صفحه مشاهده لیست دوستان</a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/user/UserInfo" class="nav-link"  style="color: white">تنظیمات اطلاعات حساب کاربری</a></li>
+        <li sec:authorize="isAuthenticated()" class="nav-item"><a href="/logout" class="nav-link"  style="color: white">خروج</a></li>
 
     </ul>
 </nav>

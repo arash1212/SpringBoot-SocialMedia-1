@@ -2,6 +2,7 @@ package com.salehi.socialmedia.model.service;
 
 import com.salehi.socialmedia.model.entity.Authorities;
 import com.salehi.socialmedia.model.entity.Friendship;
+import com.salehi.socialmedia.model.entity.Post;
 import com.salehi.socialmedia.model.entity.Users;
 import com.salehi.socialmedia.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class UsersService {
     private PasswordEncoder passwordEncoder;
     private AuthoritiesService authoritiesService;
     //
+    private PostService postService;
+    //
     Authentication authentication;
 
     @Autowired
@@ -26,6 +29,7 @@ public class UsersService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authoritiesService = authoritiesService;
+        this.postService = postService;
     }
 
     public void save(Users users) {
@@ -56,6 +60,13 @@ public class UsersService {
         return userRepository.findAll();
     }
 
+    /**
+     * method gets 'authenticated user' and a list of user 'accepted friend requests' (means 'friendShip' with not not 'approveDate') and adds each user (from friendship table) to the friendList if user
+     * is not equal to authenticated user (there are two user in friendShip table one is the sender and another one is the user who receives the friend request)
+     * and we just want to add the user to the friendList which is not the authenticated user (to get authenticated user's friendList)
+     *
+     * @return method returns a list of authenticated user's friendList
+     */
     public List<Users> getUserFriendsList() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         //
@@ -74,4 +85,9 @@ public class UsersService {
         //
         return friendList;
     }
+
+
+
+
+
 }

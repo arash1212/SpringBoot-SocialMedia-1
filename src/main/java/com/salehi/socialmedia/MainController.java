@@ -123,4 +123,12 @@ public class MainController {
         return "/user/FriendsList";
     }
 
+    @RequestMapping("/user/Activities")
+    public String goToUserActivitiesPage(HttpServletRequest request){
+        //
+        request.getSession().setAttribute("allUserAndFriendsPostsList",postService.getAllFriendsActivity());
+        //
+        return "/user/Activities";
+    }
+
 }

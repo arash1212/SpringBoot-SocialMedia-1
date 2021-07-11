@@ -13,10 +13,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -69,7 +66,7 @@ public class PostService {
     }
 
     public List<Post> getUserPosts(Users users) {
-        return postRepository.getAllByAuthor(users);
+        return postRepository.getAllByAuthorOrderByDateAddedDesc(users);
     }
 
 
@@ -81,6 +78,32 @@ public class PostService {
     public void saveLikes(Post post) {
         System.out.println(post.getId());
         postRepository.save(post);
+    }
+
+    /**
+     * Method used for Testing for now
+     * Method used to get user and All of it's friends Posts/Activity
+     *
+     * @return Method returns a list of all authenticated user friends 'Post's
+     */
+    public List<Post> getAllFriendsActivity() {
+        //
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        //
+        List<Users> friendList = usersService.getUserFriendsList();
+        //
+        List<Post> AllFriendsPosts = new ArrayList<>();
+        //all friends Posts to the list
+        for (Users user : friendList) {
+            List<Post> userPosts = getUserPosts(user);
+            //
+            AllFriendsPosts.addAll(userPosts);
+        }
+        //add authenticated User Posts to the list
+        Users authenticatedUser = usersService.findUserByUsername(authentication.getName());
+        AllFriendsPosts.addAll(getUserPosts(authenticatedUser));
+        //
+        return AllFriendsPosts;
     }
 
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>آخرین فعالیت ها</title>
+    <div th:replace="/fragment/headerTemplate::head"></div>
+</head>
+<body class="text-right">
+
+<div th:replace="/fragment/headerTemplate::body"></div>
+
+<!-- -->
+<div th:if="${session.allUserAndFriendsPostsList.size()>0}">
+
+    <div
+            style="margin:auto; width: 40%;height: fit-content;border-right:solid black;border-left:solid black;border-top:solid black;border-bottom:solid black;border-width: thin;"
+            class="card-body">
+        <fieldset>
+            <legend class="card-header"><h3>فعالیت ها</h3></legend>
+            <div th:each="post : ${session.allUserAndFriendsPostsList}" class="card-body">
+
+                <form action="/user/likePost.do" style="border-bottom: solid black;border-width: thin">
+                    <input type="text" name="id" th:value="${post.getId()}" readonly hidden> <br/>
+
+                    <a th:href="'/user/getUserPosts.do?userId='+${post.getAuthor().getId()}"
+                       th:text="'نوشته شده توسط : ' +${post.getAuthor().getUserInfo().getName()} + ' ' + ${post.getAuthor().getUserInfo().getFamily()}"></a><br/>
+
+                    <p th:text="'تاریخ ثبت پست : '+${post.dateAdded}"></p>
+
+                    <p th:text="${post.getText()}" style="white-space: pre-line;overflow-wrap: break-word"
+                       class="card-text"></p>
+
+                    <!--if post have image-->
+                    <div th:if="${post.isPostHaveImage()}" style="margin: auto">
+                        <img th:src="@{${post.getFilePath()}}"
+                             style="width: 90%;height: 90%;border-radius: 2%"/><br/>
+                    </div>
+                    <br/>
+
+                    <!--if post have video-->
+                    <div th:if="${post.isPostHaveVideo()}"
+                         style="border-bottom: solid black;border-width: thin">
+                        <video width="90%" height="70%" controls>
+                            <source th:src="@{${post.getFilePath()}}" type="video/mp4">
+                        </video>
+                        <br/>
+                    </div>
+
+                    <input type="submit" value="لایک"><br/>
+                    <p th:text="'تعداد لایک ها :'+${post.getPostLikes().size()}"></p><br/>
+
+                </form>
+            </div>
+    </div>
+</div>
+<br/><br/>
+
+
+</div>
+
+<!-- -->
+<div th:if="${session.allUserAndFriendsPostsList.size()<=0}">
+    <p>موردی یافت نشد</p>
+</div>
+
+
+</body>
+</html>
